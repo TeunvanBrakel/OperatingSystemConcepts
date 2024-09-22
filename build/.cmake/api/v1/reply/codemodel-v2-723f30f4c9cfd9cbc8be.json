@@ -1,0 +1,120 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3
+					]
+				},
+				{
+					"build" : "ext/gtest",
+					"jsonFile" : "directory-ext.gtest-Debug-0d96840450696280b8dc.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "ext/gtest",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "shell",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "gtest_builder",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "googletest::@102077db49a688fcae00",
+					"jsonFile" : "target-googletest-Debug-46cfbe5034afa36bc962.json",
+					"name" : "googletest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "shell::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-shell-Debug-208a9648d65ba84b00b0.json",
+					"name" : "shell",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "shelllib::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-shelllib-Debug-0a642d1ed1129b70803e.json",
+					"name" : "shelllib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "shelltest::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-shelltest-Debug-ed14d20586dc72062ea9.json",
+					"name" : "shelltest",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
+		"source" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

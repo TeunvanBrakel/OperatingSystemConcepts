@@ -78,7 +78,10 @@ int execvp(const vector<string>& args) {
     c_args[i] = args[i].c_str();
   }
   c_args[args.size()] = nullptr;
-  // replace current process with new process as specified
+  for (int i = 0; c_args[i] != nullptr; ++i) {
+        std::cout << "c_args[0][" << i <<"]: " << c_args[0][i] << std::endl;
+    }
+  // replace current process with new process as specified 102 'f'  of 112 'p' 108 'l' 
   int rc = ::execvp(c_args[0], const_cast<char**>(c_args));
   // if we got this far, there must be an error
   int error = errno;
@@ -141,7 +144,12 @@ Expression parse_command_line(string commandLine) {
       args.resize(args.size()-2);
     }
     expression.commands.push_back({args});
+    //std::cout << args.at(0) << "\n";
+
   }
+  //std::cout << expression.commands[0].parts.at(0) << "\n";
+   std::cout << expression.inputFromFile + "input:" << "\n";
+   std::cout << expression.outputToFile + "output:"<< "\n";
   return expression;
 }
 
@@ -151,6 +159,10 @@ int execute_expression(Expression& expression) {
     return EINVAL;
 
   // Handle intern commands (like 'cd' and 'exit')
+  if( expression.commands[0].parts.at(0) == "exit" || expression.commands[0].parts.at(0) =="^D"){
+        std::cout << "exit code run" << "\n";
+    exit(10);
+  }
   
   // External commands, executed with fork():
   // Loop over all commandos, and connect the output and input of the forked processes
@@ -198,6 +210,7 @@ int shell(bool showPrompt) {
   while (cin.good()) {
     string commandLine = request_command_line(showPrompt);
     Expression expression = parse_command_line(commandLine);
+    //std::cout << expression.commands[0].parts.at(0) + "dasfjkasdl;fd"<< "\n";
     int rc = execute_expression(expression);
     if (rc != 0)
       cerr << strerror(rc) << endl;
