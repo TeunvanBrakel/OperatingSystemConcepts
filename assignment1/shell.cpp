@@ -159,17 +159,35 @@ int execute_expression(Expression& expression) {
     return EINVAL;
 
   // Handle intern commands (like 'cd' and 'exit')
-  if( expression.commands[0].parts.at(0) == "exit" || expression.commands[0].parts.at(0) =="^D"){
+  if( expression.commands[0].parts.at(0) == std::string("exit")){
         std::cout << "exit code run" << "\n";
     exit(10);
   }
-  
+
+  if(expression.commands[0].parts.size() == 2 && expression.commands[0].parts.at(0) == std::string("cd")) {
+    std::cout << "cd command" << "\n";   
+    std::cout << expression.commands[0].parts.at(1) << "\n";   
+    string s = expression.commands[0].parts.at(1);
+    const char* path = s.c_str();
+    std::cout << path << "\n";  
+    chdir(path);
+    return 0;
+  }
+  int waitall = 0;
+  pid_t child_pid, wpid;
   // External commands, executed with fork():
   // Loop over all commandos, and connect the output and input of the forked processes
-
+  
+    // for(int i = 0; i < expression.commands.size(); i++){
+    //     if((child_pid = fork()) == 0){
+    //       execute_command(expression.commands[i]);
+    //   }
+    // }
+    // while((wpid = wait(&waitall)) > 0); 
   // For now, we just execute the first command in the expression. Disable.
-  execute_command(expression.commands[0]);
-
+  // if(fork() == 0){
+    execute_command(expression.commands[0]);
+  // }
   return 0;
 }
 
@@ -215,8 +233,5 @@ int shell(bool showPrompt) {
     if (rc != 0)
       cerr << strerror(rc) << endl;
   }
-  return 0;
-  /*/
   return step1(showPrompt);
-  //*/
 }
