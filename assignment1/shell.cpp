@@ -173,20 +173,27 @@ int execute_expression(Expression& expression) {
     chdir(path);
     return 0;
   }
-  int waitall = 0;
-  pid_t child_pid, wpid;
+  pid_t child_pid;
   // External commands, executed with fork():
   // Loop over all commandos, and connect the output and input of the forked processes
-  
-    // for(int i = 0; i < expression.commands.size(); i++){
-    //     if((child_pid = fork()) == 0){
-    //       execute_command(expression.commands[i]);
-    //   }
-    // }
-    // while((wpid = wait(&waitall)) > 0); 
+    //pipe();
+    for(size_t i = 0; i < expression.commands.size(); i++){
+        if((child_pid = fork()) == 0){
+          int err = execute_command(expression.commands[i]);
+          if(err != 0){
+            perror("execvp");
+          }
+          abort();
+        }else if(child_pid < 0){
+          perror("fork");
+          exit(EXIT_FAILURE);
+        }
+      
+    }
+    waitpid(-1, nullptr, 0);
   // For now, we just execute the first command in the expression. Disable.
   // if(fork() == 0){
-    execute_command(expression.commands[0]);
+    //execute_command(expression.commands[0]);
   // }
   return 0;
 }
