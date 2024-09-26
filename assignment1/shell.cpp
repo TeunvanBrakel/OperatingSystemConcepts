@@ -276,8 +276,11 @@ int execute_expression(Expression& expression) {
                 dup2(pipefds[1], STDOUT_FILENO); //Write output to the current pipe 
                 close(pipefds[1]);
             }
-
+            if(expression.background){
+              sleep(2);
+            }
             execute_command(command); //Uses STDIN as input
+            
             abort();
         } else { //Parent
             child_pids.push_back(pid);
