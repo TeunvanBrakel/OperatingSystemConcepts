@@ -35,6 +35,12 @@
 #include <list>
 #include <optional>
 
+//Custom
+#include <map>
+#include <cerrno>
+#include <functional>
+#include <unordered_map>
+
 // although it is good habit, you don't have to type 'std' before many objects by including this line
 using namespace std;
 
@@ -48,6 +54,78 @@ struct Expression {
   string outputToFile;
   bool background = false;
 };
+
+//Enums and mappers
+//Enums 
+enum InternalCommands { 
+   NORMAL_EXIT_COMMAND,
+   FUNC_EXIT_COMMAND,
+   CD_COMMAND 
+};
+
+//Make it lazily loaded if time is available
+std::map<InternalCommands, std::string> internal_command_to_string = { 
+  {NORMAL_EXIT_COMMAND, std::string("exit")},
+  {FUNC_EXIT_COMMAND, std::string("exit()")},
+  {CD_COMMAND, std::string("cd")}
+ };
+
+std::vector<std::pair<std::function<bool(const std::string&)>, 
+                           std::function<void(const Command&)>>> internal_commands = {
+        {
+            // Predicate for "exit" command
+            [](const std::string& s) { return (s == internal_command_to_string[FUNC_EXIT_COMMAND] || s == internal_command_to_string[NORMAL_EXIT_COMMAND]); },
+            [](const Command& cmd) {
+                std::cout << "Goodbye! Exiting..." << std::endl;
+                exit(0);
+            }
+        },
+        {
+            // Predicate for "cd" command
+            [](const std::string& s) { return s == internal_command_to_string[CD_COMMAND]; },
+            [](const Command& cmd) {
+            if (cmd.parts.size() == 1) {
+                std::cout << "No path argument provided" << std::endl;
+                return;
+            }
+
+            if (cmd.parts.size() != 2) {
+                std::cout << "Invalid amount of arguments provided" << std::endl;
+                return;
+            }
+
+            int err_code = chdir(cmd.parts.at(1).c_str());
+            if (err_code != 0) {
+                std::perror("chdir()");
+                return;
+            }
+
+            std::cout << "Directory changed to " << cmd.parts.at(1) << std::endl;
+            }
+        }
+    };
+
+ enum ExternalCommands {
+  DATE_COMMAND
+ };
+
+//Make it lazily loaded as well
+ std::map<ExternalCommands, std::string> external_command_to_string = {
+  {DATE_COMMAND, "date"}
+ };
+
+//Trim a string from https://stackoverflow.com/questions/216823/how-to-trim-a-stdstring
+//Because I want to avoid including boost
+inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+inline std::string rtrim_copy(std::string s) {
+    rtrim(s);
+    return s;
+}
 
 // Parses a string to form a vector of arguments. The separator is a space char (' ').
 vector<string> split_string(const string& str, char delimiter = ' ') {
@@ -78,10 +156,7 @@ int execvp(const vector<string>& args) {
     c_args[i] = args[i].c_str();
   }
   c_args[args.size()] = nullptr;
-  for (int i = 0; c_args[i] != nullptr; ++i) {
-        std::cout << "c_args[0][" << i <<"]: " << c_args[0][i] << std::endl;
-    }
-  // replace current process with new process as specified 102 'f'  of 112 'p' 108 'l' 
+  // replace current process with new process as specified
   int rc = ::execvp(c_args[0], const_cast<char**>(c_args));
   // if we got this far, there must be an error
   int error = errno;
@@ -123,8 +198,8 @@ string request_command_line(bool showPrompt) {
 
 // note: For such a simple shell, there is little need for a full-blown parser (as in an LL or LR capable parser).
 // Here, the user input can be parsed using the following approach.
-// First, divide the input into the distinct commands (as they can be chained, separated by `|`).
-// Next, these commands are parsed separately. The first command is checked for the `<` operator, and the last command for the `>` operator.
+// First, divide the input into the distinct commands (as they can be chained, separated by |).
+// Next, these commands are parsed separately. The first command is checked for the < operator, and the last command for the > operator.
 Expression parse_command_line(string commandLine) {
   Expression expression;
   vector<string> commands = split_string(commandLine, '|');
@@ -144,13 +219,18 @@ Expression parse_command_line(string commandLine) {
       args.resize(args.size()-2);
     }
     expression.commands.push_back({args});
-    //std::cout << args.at(0) << "\n";
-
   }
-  //std::cout << expression.commands[0].parts.at(0) << "\n";
-   std::cout << expression.inputFromFile + "input:" << "\n";
-   std::cout << expression.outputToFile + "output:"<< "\n";
   return expression;
+}
+
+void handle_internal_command(const std::vector<Command>& command) {
+  for(const Command& command : command) {
+    const std::string s_command = command.parts[0];
+    for(auto& [predicate, action] : internal_commands) {
+      if(predicate(s_command))
+        action(command);
+    }
+  }
 }
 
 int execute_expression(Expression& expression) {
@@ -159,16 +239,72 @@ int execute_expression(Expression& expression) {
     return EINVAL;
 
   // Handle intern commands (like 'cd' and 'exit')
-  if( expression.commands[0].parts.at(0) == "exit" || expression.commands[0].parts.at(0) =="^D"){
-        std::cout << "exit code run" << "\n";
-    exit(10);
-  }
+  handle_internal_command(expression.commands);
   
   // External commands, executed with fork():
   // Loop over all commandos, and connect the output and input of the forked processes
+  int pipefds[2];
+  pid_t pid;
+  int prev_pipefd = -1;
+  std::vector<pid_t> child_pids;
 
-  // For now, we just execute the first command in the expression. Disable.
-  execute_command(expression.commands[0]);
+  auto is_last_element = [&](size_t& i) { return i >= (expression.commands.size() - 1);};
+
+   for (size_t i = 0; i < expression.commands.size(); ++i) {
+        const Command& command = expression.commands[i];
+
+        if (!is_last_element(i)) {
+            //Open pipe
+            if (pipe(pipefds) == -1) {
+                std::perror("pipe");
+                return -1;
+            }
+        }
+
+        //Fork parent
+        if ((pid = fork()) == -1) {
+            std::perror("fork");
+            return -1;
+        } else if (pid == 0) { //Child process
+            if (i > 0) { //Not the first
+                dup2(prev_pipefd, STDIN_FILENO); //Read the output from the previous command and use it as input
+                close(prev_pipefd);
+            }
+
+            if (!is_last_element(i)) { //Not the last
+                close(pipefds[0]); 
+                dup2(pipefds[1], STDOUT_FILENO); //Write output to the current pipe 
+                close(pipefds[1]);
+            }
+            if(expression.background){
+              sleep(2);
+            }
+            execute_command(command); //Uses STDIN as input
+            
+            abort();
+        } else { //Parent
+            child_pids.push_back(pid);
+
+            if (i > 0) { //Not the first command
+                close(prev_pipefd);
+            }
+
+            if (!is_last_element(i)) { 
+                close(pipefds[1]);
+                prev_pipefd = pipefds[0]; //Read the previous command its output and put it in prev_pipefd setting it up for the next iteration
+            }
+        }
+    }
+
+  if(expression.background) {
+    for(pid_t pid : child_pids) {
+      waitpid(pid, nullptr, WNOHANG);  // Dont wait    
+    }
+  } else {
+     for(pid_t pid : child_pids) {
+      waitpid(pid, nullptr, 0);  // Wait for each specific child process    
+    }
+  }
 
   return 0;
 }
@@ -210,7 +346,6 @@ int shell(bool showPrompt) {
   while (cin.good()) {
     string commandLine = request_command_line(showPrompt);
     Expression expression = parse_command_line(commandLine);
-    //std::cout << expression.commands[0].parts.at(0) + "dasfjkasdl;fd"<< "\n";
     int rc = execute_expression(expression);
     if (rc != 0)
       cerr << strerror(rc) << endl;

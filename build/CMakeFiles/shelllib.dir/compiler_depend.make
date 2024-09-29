@@ -267,8 +267,58 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
   /usr/include/c++/11/optional \
   /usr/include/c++/11/utility \
   /usr/include/c++/11/bits/stl_relops.h \
-  /usr/include/c++/11/bits/enable_special_members.h
+  /usr/include/c++/11/bits/enable_special_members.h \
+  /usr/include/c++/11/map \
+  /usr/include/c++/11/bits/stl_tree.h \
+  /usr/include/c++/11/bits/node_handle.h \
+  /usr/include/c++/11/bits/stl_map.h \
+  /usr/include/c++/11/tuple \
+  /usr/include/c++/11/array \
+  /usr/include/c++/11/bits/uses_allocator.h \
+  /usr/include/c++/11/bits/invoke.h \
+  /usr/include/c++/11/bits/stl_multimap.h \
+  /usr/include/c++/11/bits/erase_if.h \
+  /usr/include/c++/11/functional \
+  /usr/include/c++/11/bits/refwrap.h \
+  /usr/include/c++/11/bits/std_function.h \
+  /usr/include/c++/11/unordered_map \
+  /usr/include/c++/11/bits/hashtable.h \
+  /usr/include/c++/11/bits/hashtable_policy.h \
+  /usr/include/c++/11/bits/unordered_map.h \
+  /usr/include/c++/11/bits/stl_algo.h \
+  /usr/include/c++/11/bits/algorithmfwd.h \
+  /usr/include/c++/11/bits/stl_heap.h \
+  /usr/include/c++/11/bits/stl_tempbuf.h \
+  /usr/include/c++/11/bits/uniform_int_dist.h
 
+
+/usr/include/c++/11/bits/algorithmfwd.h:
+
+/usr/include/c++/11/bits/unordered_map.h:
+
+/usr/include/c++/11/bits/hashtable.h:
+
+/usr/include/c++/11/unordered_map:
+
+/usr/include/c++/11/bits/stl_tempbuf.h:
+
+/usr/include/c++/11/bits/std_function.h:
+
+/usr/include/c++/11/bits/stl_multimap.h:
+
+/usr/include/c++/11/bits/invoke.h:
+
+/usr/include/c++/11/bits/uses_allocator.h:
+
+/usr/include/c++/11/array:
+
+/usr/include/c++/11/tuple:
+
+/usr/include/c++/11/bits/stl_map.h:
+
+/usr/include/c++/11/bits/stl_tree.h:
+
+/usr/include/c++/11/map:
 
 /usr/include/c++/11/optional:
 
@@ -287,6 +337,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/c++/11/bits/node_handle.h:
 
 /usr/include/c++/11/iostream:
 
@@ -364,6 +416,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 
 /usr/include/c++/11/bits/ostream.tcc:
 
+/usr/include/c++/11/bits/stl_algo.h:
+
 /usr/include/asm-generic/int-ll64.h:
 
 /usr/include/c++/11/new:
@@ -402,6 +456,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
 
+/usr/include/c++/11/functional:
+
 /usr/include/linux/errno.h:
 
 /usr/include/c++/11/bits/stringfwd.h:
@@ -417,6 +473,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 /usr/include/x86_64-linux-gnu/sys/stat.h:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/11/bits/refwrap.h:
 
 /usr/include/linux/stddef.h:
 
@@ -584,6 +642,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
+/usr/include/c++/11/bits/erase_if.h:
+
 /usr/include/c++/11/bits/ptr_traits.h:
 
 /usr/include/stdint.h:
@@ -599,6 +659,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
 
 /usr/include/alloca.h:
+
+/usr/include/c++/11/bits/stl_heap.h:
 
 /usr/include/c++/11/bits/std_abs.h:
 
@@ -647,6 +709,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h:
 
 /usr/include/c++/11/stdexcept:
+
+/usr/include/c++/11/bits/uniform_int_dist.h:
 
 /usr/include/c++/11/bits/basic_ios.h:
 
@@ -781,6 +845,8 @@ CMakeFiles/shelllib.dir/shell.cpp.o: /home/teunvbrakel/assignments/OperatingSyst
 /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types.h:
+
+/usr/include/c++/11/bits/hashtable_policy.h:
 
 /usr/include/x86_64-linux-gnu/bits/statx-generic.h:
 
