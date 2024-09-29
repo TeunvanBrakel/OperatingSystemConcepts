@@ -40,6 +40,7 @@
 #include <cerrno>
 #include <functional>
 #include <unordered_map>
+#include <memory>
 
 // although it is good habit, you don't have to type 'std' before many objects by including this line
 using namespace std;
@@ -104,28 +105,6 @@ std::vector<std::pair<std::function<bool(const std::string&)>,
             }
         }
     };
-
- enum ExternalCommands {
-  DATE_COMMAND
- };
-
-//Make it lazily loaded as well
- std::map<ExternalCommands, std::string> external_command_to_string = {
-  {DATE_COMMAND, "date"}
- };
-
-//Trim a string from https://stackoverflow.com/questions/216823/how-to-trim-a-stdstring
-//Because I want to avoid including boost
-inline void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
-}
-
-inline std::string rtrim_copy(std::string s) {
-    rtrim(s);
-    return s;
-}
 
 // Parses a string to form a vector of arguments. The separator is a space char (' ').
 vector<string> split_string(const string& str, char delimiter = ' ') {
@@ -233,6 +212,30 @@ void handle_internal_command(const std::vector<Command>& command) {
   }
 }
 
+int read_file(const std::string& file_path) {
+  auto file_exists = [&]() {return (access(file_path.c_str(), F_OK) != 1);};
+
+  if(!file_exists()) {
+    return -1;
+  }
+
+  return open(file_path.c_str(), O_RDONLY);
+}
+
+int open_file(std::string& filepath) {
+  return open(filepath.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+}
+
+int close_file_descriptor(int* fd, optional<bool> predicate) {
+  if(!predicate.has_value() && fd && *fd >= 0) {
+    return close(*fd);
+  }
+  if(predicate.has_value() && predicate.value() && fd && *fd >= 0) {
+    return close(*fd);
+  } 
+  return 0;
+}
+
 int execute_expression(Expression& expression) {
   // Check for empty expression
   if (expression.commands.size() == 0)
@@ -246,15 +249,28 @@ int execute_expression(Expression& expression) {
   int pipefds[2];
   pid_t pid;
   int prev_pipefd = -1;
-  std::vector<pid_t> child_pids;
+  std::vector<std::reference_wrapper<const pid_t>> child_pids;
+
+  const bool write_to_file = !expression.outputToFile.empty();
+  const bool read_from_file = !expression.inputFromFile.empty();
+
+  int output_fd;
+  if(write_to_file && (output_fd = open_file(expression.outputToFile)) == -1) {
+    std::perror("acces");
+  };
+
+  int input_fd;
+  if(read_from_file && (input_fd = read_file(expression.inputFromFile)) == -1) {
+    std::perror("acces");
+  }
 
   auto is_last_element = [&](size_t& i) { return i >= (expression.commands.size() - 1);};
+  auto is_first_command = [](size_t& i) { return i == 0 ;};
 
    for (size_t i = 0; i < expression.commands.size(); ++i) {
         const Command& command = expression.commands[i];
 
         if (!is_last_element(i)) {
-            //Open pipe
             if (pipe(pipefds) == -1) {
                 std::perror("pipe");
                 return -1;
@@ -266,26 +282,32 @@ int execute_expression(Expression& expression) {
             std::perror("fork");
             return -1;
         } else if (pid == 0) { //Child process
-            if (i > 0) { //Not the first
+            if (!is_first_command(i)) {
                 dup2(prev_pipefd, STDIN_FILENO); //Read the output from the previous command and use it as input
                 close(prev_pipefd);
+            } else if (is_first_command(i) && read_from_file) {
+                dup2(input_fd, STDIN_FILENO); //From file to new input
+                close(input_fd);
             }
 
             if (!is_last_element(i)) { //Not the last
                 close(pipefds[0]); 
                 dup2(pipefds[1], STDOUT_FILENO); //Write output to the current pipe 
                 close(pipefds[1]);
+            } else if (write_to_file) {
+                dup2(output_fd, STDOUT_FILENO); //We are the last element and write to file is true
+                close(output_fd);
             }
-            if(expression.background){
-              sleep(2);
-            }
-            execute_command(command); //Uses STDIN as input
+
+            /*if(expression.background)
+                sleep(2); */
             
+            execute_command(command); //Uses STDIN as input
             abort();
         } else { //Parent
-            child_pids.push_back(pid);
+            child_pids.push_back(std::ref(pid));
 
-            if (i > 0) { //Not the first command
+            if (!is_first_command(i)) {
                 close(prev_pipefd);
             }
 
@@ -296,12 +318,15 @@ int execute_expression(Expression& expression) {
         }
     }
 
+  close_file_descriptor(&output_fd, write_to_file); //Close the output file descriptor
+  close_file_descriptor(&input_fd, read_from_file); //Close the read descriptor
+          
   if(expression.background) {
-    for(pid_t pid : child_pids) {
-      waitpid(pid, nullptr, WNOHANG);  // Dont wait    
+    for(auto& pid : child_pids) {
+      waitpid(pid, nullptr, WNOHANG);  // Dont wait  
     }
   } else {
-     for(pid_t pid : child_pids) {
+     for(auto& pid : child_pids) {
       waitpid(pid, nullptr, 0);  // Wait for each specific child process    
     }
   }
