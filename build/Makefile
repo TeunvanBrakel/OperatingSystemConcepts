@@ -57,7 +57,7 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1
+CMAKE_SOURCE_DIR = /home/teunvbrakel/assignments/OperatingSystemConcepts/project2
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/teunvbrakel/assignments/OperatingSystemConcepts/build
@@ -117,63 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named shelllib
+# Target rules for targets named prime
 
 # Build rule for target.
-shelllib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 shelllib
-.PHONY : shelllib
+prime: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 prime
+.PHONY : prime
 
 # fast build rule for target.
-shelllib/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelllib.dir/build.make CMakeFiles/shelllib.dir/build
-.PHONY : shelllib/fast
-
-#=============================================================================
-# Target rules for targets named shell
-
-# Build rule for target.
-shell: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 shell
-.PHONY : shell
-
-# fast build rule for target.
-shell/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shell.dir/build.make CMakeFiles/shell.dir/build
-.PHONY : shell/fast
-
-#=============================================================================
-# Target rules for targets named shelltest
-
-# Build rule for target.
-shelltest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 shelltest
-.PHONY : shelltest
-
-# fast build rule for target.
-shelltest/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/build
-.PHONY : shelltest/fast
-
-#=============================================================================
-# Target rules for targets named googletest
-
-# Build rule for target.
-googletest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 googletest
-.PHONY : googletest
-
-# fast build rule for target.
-googletest/fast:
-	$(MAKE) $(MAKESILENT) -f ext/gtest/CMakeFiles/googletest.dir/build.make ext/gtest/CMakeFiles/googletest.dir/build
-.PHONY : googletest/fast
+prime/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/prime.dir/build.make CMakeFiles/prime.dir/build
+.PHONY : prime/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shell.dir/build.make CMakeFiles/shell.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/prime.dir/build.make CMakeFiles/prime.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -181,7 +142,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shell.dir/build.make CMakeFiles/shell.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/prime.dir/build.make CMakeFiles/prime.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -189,80 +150,8 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shell.dir/build.make CMakeFiles/shell.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/prime.dir/build.make CMakeFiles/prime.dir/main.cpp.s
 .PHONY : main.cpp.s
-
-shell.o: shell.cpp.o
-.PHONY : shell.o
-
-# target to build an object file
-shell.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelllib.dir/build.make CMakeFiles/shelllib.dir/shell.cpp.o
-.PHONY : shell.cpp.o
-
-shell.i: shell.cpp.i
-.PHONY : shell.i
-
-# target to preprocess a source file
-shell.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelllib.dir/build.make CMakeFiles/shelllib.dir/shell.cpp.i
-.PHONY : shell.cpp.i
-
-shell.s: shell.cpp.s
-.PHONY : shell.s
-
-# target to generate assembly for a file
-shell.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelllib.dir/build.make CMakeFiles/shelllib.dir/shell.cpp.s
-.PHONY : shell.cpp.s
-
-shell.test.o: shell.test.cpp.o
-.PHONY : shell.test.o
-
-# target to build an object file
-shell.test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/shell.test.cpp.o
-.PHONY : shell.test.cpp.o
-
-shell.test.i: shell.test.cpp.i
-.PHONY : shell.test.i
-
-# target to preprocess a source file
-shell.test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/shell.test.cpp.i
-.PHONY : shell.test.cpp.i
-
-shell.test.s: shell.test.cpp.s
-.PHONY : shell.test.s
-
-# target to generate assembly for a file
-shell.test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/shell.test.cpp.s
-.PHONY : shell.test.cpp.s
-
-test.o: test.cpp.o
-.PHONY : test.o
-
-# target to build an object file
-test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/test.cpp.o
-.PHONY : test.cpp.o
-
-test.i: test.cpp.i
-.PHONY : test.i
-
-# target to preprocess a source file
-test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/test.cpp.i
-.PHONY : test.cpp.i
-
-test.s: test.cpp.s
-.PHONY : test.s
-
-# target to generate assembly for a file
-test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shelltest.dir/build.make CMakeFiles/shelltest.dir/test.cpp.s
-.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -272,22 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... googletest"
-	@echo "... shell"
-	@echo "... shelllib"
-	@echo "... shelltest"
+	@echo "... prime"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... shell.o"
-	@echo "... shell.i"
-	@echo "... shell.s"
-	@echo "... shell.test.o"
-	@echo "... shell.test.i"
-	@echo "... shell.test.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
 .PHONY : help
 
 

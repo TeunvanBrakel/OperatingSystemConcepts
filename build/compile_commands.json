@@ -1,22 +1,7 @@
 [
 {
   "directory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-  "command": "/usr/bin/g++  -I/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/googletest-prefix/src/googletest/googletest/include  -Wall -g -o CMakeFiles/shelllib.dir/shell.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/shell.cpp",
-  "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/shell.cpp"
-},
-{
-  "directory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-  "command": "/usr/bin/g++  -I/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/googletest-prefix/src/googletest/googletest/include  -Wall -g -o CMakeFiles/shell.dir/main.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/main.cpp",
-  "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/main.cpp"
-},
-{
-  "directory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-  "command": "/usr/bin/g++  -I/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/googletest-prefix/src/googletest/googletest/include  -Wall -g -o CMakeFiles/shelltest.dir/test.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/test.cpp",
-  "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/test.cpp"
-},
-{
-  "directory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-  "command": "/usr/bin/g++  -I/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/googletest-prefix/src/googletest/googletest/include  -Wall -g -o CMakeFiles/shelltest.dir/shell.test.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/shell.test.cpp",
-  "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/shell.test.cpp"
+  "command": "/usr/bin/g++    -Wall -O2 -g -g -std=gnu++14 -o CMakeFiles/prime.dir/main.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/project2/main.cpp",
+  "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/project2/main.cpp"
 }
 ]

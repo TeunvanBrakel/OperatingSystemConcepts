@@ -14,9 +14,6 @@
 # EXTERNAL cache entries
 ########################
 
-//Build the tests
-BUILD_TESTS:BOOL=ON
-
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
@@ -29,8 +26,8 @@ CMAKE_BUILD_TYPE:STRING=Debug
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
-//No help, variable specified on the command line.
-CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++
+//CXX compiler
+CMAKE_CXX_COMPILER:STRING=/usr/bin/g++
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -55,8 +52,8 @@ CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 //Flags used by the CXX compiler during RELWITHDEBINFO builds.
 CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
-//No help, variable specified on the command line.
-CMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc
+//C compiler
+CMAKE_C_COMPILER:STRING=/usr/bin/gcc
 
 //A wrapper around 'ar' adding the appropriate '--plugin' option
 // for the GCC compiler
@@ -147,7 +144,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=shell
+CMAKE_PROJECT_NAME:STATIC=prime
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -212,22 +209,13 @@ CMAKE_STRIP:FILEPATH=/usr/bin/strip
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
-gtest_builder_BINARY_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest
+prime_BINARY_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/build
 
 //Value Computed by CMake
-gtest_builder_IS_TOP_LEVEL:STATIC=OFF
+prime_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-gtest_builder_SOURCE_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1/ext/gtest
-
-//Value Computed by CMake
-shell_BINARY_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/build
-
-//Value Computed by CMake
-shell_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-shell_SOURCE_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1
+prime_SOURCE_DIR:STATIC=/home/teunvbrakel/assignments/OperatingSystemConcepts/project2
 
 
 ########################
@@ -316,7 +304,7 @@ CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
 CMAKE_HAVE_PTHREAD_H:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
-CMAKE_HOME_DIRECTORY:INTERNAL=/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment1
+CMAKE_HOME_DIRECTORY:INTERNAL=/home/teunvbrakel/assignments/OperatingSystemConcepts/project2
 //Install .so files without execute permission.
 CMAKE_INSTALL_SO_NO_EXE:INTERNAL=1
 //ADVANCED property for variable: CMAKE_LINKER
@@ -336,7 +324,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

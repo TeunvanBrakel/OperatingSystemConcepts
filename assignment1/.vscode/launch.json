@@ -8,7 +8,7 @@
 			"name": "Launch with debugger",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/build/prime",
+			"program": "${workspaceFolder}/build/shell",
 			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",

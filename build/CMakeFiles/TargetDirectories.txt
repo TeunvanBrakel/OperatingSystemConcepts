@@ -1,8 +1,3 @@
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/shelllib.dir
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/shell.dir
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/shelltest.dir
+/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/prime.dir
 /home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/edit_cache.dir
 /home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/rebuild_cache.dir
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/CMakeFiles/googletest.dir
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/CMakeFiles/edit_cache.dir
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/ext/gtest/CMakeFiles/rebuild_cache.dir

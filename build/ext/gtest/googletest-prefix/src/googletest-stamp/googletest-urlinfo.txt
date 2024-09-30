@@ -1,3 +1,0 @@
-repository='external project URL'
-module='https://github.com/google/googletest/archive/release-1.8.0.tar.gz'
-tag='SHA1=e7e646a6204638fe8e87e165292b8dd9cd4c36ed'
