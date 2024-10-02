@@ -33,7 +33,7 @@ void write_to_log(std::string& s) {
   logs.push(s);
 }
 
-std::string read_from_string(std::size_t element) {
+std::string read_from_string() {
   if(logs.empty()) {
     std::cout << "No logs available" << std::endl;
     return "";
@@ -60,7 +60,7 @@ int32_t remove_from_buffer() {
 }
 
 void set_bound_buffer(size_t bound) {
-  if(bound < 0) {
+  if(bound == BufferState::Unbounded) {
     std::cout << "Negative buffer not allowed" << std::endl;
     return;
   }
@@ -75,16 +75,26 @@ void set_bound_buffer(size_t bound) {
 }
 
 void unbound_buffer() {
-  BUFFER_SIZE = -1;
+  BUFFER_SIZE = BufferState::Unbounded;
 }
 
 
 int main(int argc, char* argv[]) {
-  set_bound_buffer(10);
-
+  remove_from_buffer();
+  read_from_string();
+  string s = "test";
+  write_to_log(s);
+  set_bound_buffer(9);
+  std::cout << read_from_string()<<endl;
   for(size_t i = 0; i <= 10; ++i) {
     add_to_buffer(i);
   }
+  unbound_buffer();
+  add_to_buffer(11);
+  std:cout<< buffer.size() <<endl;
+  set_bound_buffer(5);
+  std::cout<< remove_from_buffer() <<endl;
+  set_bound_buffer(-1);
   
 	return 0;
 }
