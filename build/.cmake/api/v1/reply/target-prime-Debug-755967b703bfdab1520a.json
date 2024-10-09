@@ -36,9 +36,6 @@
 			[
 				{
 					"fragment" : " -Wall -O2 -g -g"
-				},
-				{
-					"fragment" : "-std=gnu++14"
 				}
 			],
 			"language" : "CXX",
@@ -48,7 +45,7 @@
 				[
 					1
 				],
-				"standard" : "14"
+				"standard" : "17"
 			},
 			"sourceIndexes" : 
 			[

@@ -8,6 +8,13 @@
   Hint: Ctrl-space to auto complete a functionname/variable.
   */
 
+
+ /*
+  TODO 
+    Fix buffer and bound semaphores 
+    Talk about the problem with multiple iterations of readers and writers 
+ */
+
 // function/class definitions you are going to use
 #include <algorithm>
 #include <iostream>
@@ -18,22 +25,77 @@
 #include <stack>
 #include <map>
 #include <functional>
+#include <variant>
+#include <chrono>
+#include <atomic>
 
 // although it is good habit, you don't have to type 'std::' before many objects by including this line
 using namespace std;
+
+template <typename T>
+struct Ok {
+  public:
+    explicit constexpr Ok(T value) : value(std::move(value)) {}
+
+    constexpr T&& take_value() { return std::move(value); }
+
+    T value;
+};
+
+template <typename T>
+struct Err {
+  public:
+    explicit constexpr Err(T value) : value(std::move(value)) {}
+
+    constexpr T&& take_value() { return std::move(value); }
+
+    T value;
+};
+
+template <typename OkT, typename ErrT>
+struct Result {
+  public:
+    using VariantT = std::variant<Ok<OkT>, Err<ErrT>>;
+
+    constexpr Result(Ok<OkT> value) : variant(std::move(value)) {}
+    constexpr Result(Err<ErrT> value) : variant(std::move(value)) {}
+
+    constexpr bool is_ok() const { return std::holds_alternative<Ok<OkT>>(variant); }
+    constexpr bool is_err() const { return std::holds_alternative<Err<ErrT>>(variant); }
+
+    constexpr OkT ok_value() const { return std::get<Ok<OkT>>(variant).value; }
+    constexpr ErrT err_value() const { return std::get<Err<ErrT>>(variant).value; }
+
+    constexpr OkT&& unwrap() { return std::get<Ok<OkT>>(variant).take_value(); }
+    constexpr ErrT&& err() { return std::get<Err<ErrT>>(variant).take_value(); }
+
+    VariantT variant;
+};
+
+inline static std::chrono::steady_clock::time_point get_5_seconds_timeout() {
+    return std::chrono::steady_clock::now() + std::chrono::seconds(5);
+}
 
 enum BufferState {
   Unbounded = static_cast<std::size_t>(-1)
 };
 
-std::mutex logSemaphore;
-std::mutex bufferSemaphore;
-std::mutex boundSemaphore;
+//Log mutexes
+std::mutex write_to_log_allowed_mtx;
+std::mutex read_from_log_allowed_mtx;
+std::atomic<int32_t> n_readers {static_cast<int32_t>(0)};
 
-//I want this to be a pair of <LogType, std::string> however I do not know if this allowed so I won't :(
+//Buffer mutexes
+std::mutex read_from_buffer_mtx;
+std::mutex write_to_buffer_mtx;
+std::mutex bound_semaphore_mtx;
+std::atomic<int32_t> n_write_to_buffer;
+std::atomic<int32_t> n_read_from_buffer;
+
+//General data 
 std::stack<std::string> logs;
 std::vector<int32_t> buffer; 
-std::size_t BUFFER_SIZE = BufferState::Unbounded;
+std::atomic<size_t> BUFFER_SIZE = BufferState::Unbounded;
 
 enum ErrorLogs {
   NO_LOGS_AVAILABLE,
@@ -68,110 +130,97 @@ std::map<std::size_t, std::function<const std::string(int)>> SuccesMessages = {
     {SET_BOUND, [] (const int item) { return FormatSuccesMessage(item, " set as bound"); }},
     {UNBOUND, [] (const int _) { return FormatSuccesMessage(_, "Unbounded buffer");}}
 };
+
 void write_to_log(const std::string& s) {
-  if(logSemaphore.try_lock()){
-    logs.push(s);
-    logSemaphore.unlock();
-  }
-  
+  const std::lock_guard<std::mutex> l(read_from_log_allowed_mtx);
+  while(n_readers > 0); //Could take infinite time
+
+  const std::lock_guard<std::mutex> l2(write_to_log_allowed_mtx);
+  logs.push(s);
 }
 
-std::string read_from_string() {
-  if(logSemaphore.try_lock()){
-    if(logs.empty()) {
-        write_to_log(ErrorMessages[NO_LOGS_AVAILABLE]);
-        logSemaphore.unlock();
-        return "";
+Result<std::string, std::string> read_from_log() {
+    read_from_log_allowed_mtx.lock();
+    ++n_readers;
+    read_from_log_allowed_mtx.unlock();
+    while(n_readers > 0) {
+      if(logs.empty()) {
+          write_to_log(ErrorMessages[NO_LOGS_AVAILABLE]);
+          --n_readers;
+          return Err<std::string>("Log is empty");
+      }
+      string result = logs.top();
+      --n_readers;
+      return Ok(result);
     }
-    string result = logs.top();
-    logSemaphore.unlock();
-    return result;
-  }
 }
 
 void add_to_buffer(int32_t element) {
-  if(boundSemaphore.try_lock()){
-    if(BUFFER_SIZE != BufferState::Unbounded && BUFFER_SIZE <= buffer.size()) {
-      logSemaphore.lock();
-      write_to_log(ErrorMessages[FULL_BUFFER]);
-      logSemaphore.unlock();
-      return; 
-    }
-    logSemaphore.lock();
-    bufferSemaphore.lock();
-    write_to_log(SuccesMessages[ADDED_TO_BUFFER](element));
-    buffer.emplace_back(element);
-    bufferSemaphore.unlock();
-    logSemaphore.unlock();
-    boundSemaphore.unlock();
+  const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
+  const std::lock_guard<std::mutex> lock2(read_from_buffer_mtx);
+  if(BUFFER_SIZE != BufferState::Unbounded && BUFFER_SIZE <= buffer.size()) {
+    write_to_log(ErrorMessages[FULL_BUFFER]);
+    return; 
   }
+
+  while(n_read_from_buffer > 0);
+
+  ++n_write_to_buffer;
+  const std::lock_guard<std::mutex> lock(write_to_buffer_mtx);
+  write_to_log(SuccesMessages[ADDED_TO_BUFFER](element));
+  buffer.emplace_back(element);
+  --n_write_to_buffer; 
 }
 
-int32_t remove_from_buffer() {
-  if(bufferSemaphore.try_lock()){
-    if(buffer.empty()) {
-      logSemaphore.lock();
-      write_to_log(ErrorMessages[EMPTY_BUFFER]);
-      logSemaphore.unlock();
-      bufferSemaphore.unlock();
-      return -1;
-    }
-    logSemaphore.lock();
-    int32_t r = buffer.front();
-    buffer.erase(buffer.begin());
-    write_to_log(SuccesMessages[REMOVED_FROM_BUFFER](r));
-    logSemaphore.unlock();
-    bufferSemaphore.unlock();
-    return r; 
+Result<int32_t, string> remove_from_buffer() {
+  const std::lock_guard<std::mutex> l(read_from_buffer_mtx); 
+  ++n_read_from_buffer;
+
+  if(buffer.empty()) {
+    write_to_log(ErrorMessages[EMPTY_BUFFER]);
+    --n_read_from_buffer;
+    return Err<std::string>(ErrorMessages[EMPTY_BUFFER]);
   }
+
+  int32_t r = buffer.front();
+  buffer.erase(buffer.begin());
+  write_to_log(SuccesMessages[REMOVED_FROM_BUFFER](r));
+  --n_read_from_buffer;
+  return Ok<int32_t>(r); 
 }
 
 void set_bound_buffer(size_t bound) {
-  if(boundSemaphore.try_lock()){
-    if(bound == BufferState::Unbounded) {
-      logSemaphore.lock();
-      write_to_log(ErrorMessages[NEGATIVE_BUFFER_BOUND]);
-      logSemaphore.unlock();
-      boundSemaphore.unlock();
-      return;
-    }
+  const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
+  const std::lock_guard<std::mutex> l2(read_from_buffer_mtx); 
 
-    if(bound < buffer.size()) {
-      logSemaphore.lock();
-      write_to_log(ErrorMessages[REQUESTED_BOUND_TO_LOW]);
-      logSemaphore.unlock();
-      boundSemaphore.unlock();
-      return;
-    }
-    logSemaphore.lock();
-    bufferSemaphore.lock();
-    BUFFER_SIZE = bound;
-    buffer.reserve(bound);
-    write_to_log(SuccesMessages[SET_BOUND](bound));
-    bufferSemaphore.unlock();
-    logSemaphore.unlock();
-    boundSemaphore.unlock();
+  if(bound == BufferState::Unbounded) {
+    write_to_log(ErrorMessages[NEGATIVE_BUFFER_BOUND]);
+    return;
   }
+
+  if(bound < buffer.size()) {
+    write_to_log(ErrorMessages[REQUESTED_BOUND_TO_LOW]);
+    return;
+  }
+  
+  BUFFER_SIZE = bound;
+  buffer.reserve(bound);
+  write_to_log(SuccesMessages[SET_BOUND](bound));
 }
 
 void unbound_buffer() {
-  if(boundSemaphore.try_lock()){
-    logSemaphore.lock();
-    BUFFER_SIZE = -1;
-    write_to_log(SuccesMessages[UNBOUND](-1));
-    logSemaphore.unlock();
-    boundSemaphore.unlock();
-  }
+  BUFFER_SIZE = -1;
+  write_to_log(SuccesMessages[UNBOUND](-1));
 }
 
 
 int main(int argc, char* argv[]) {
   remove_from_buffer();
-  std::cout<< read_from_string() << endl;
+  std::cout<< read_from_log().unwrap() << endl;
   string s = "test";
   write_to_log(s);
   set_bound_buffer(9);
-  std::cout << read_from_string()<<endl;
+  std::cout << read_from_log().unwrap() <<endl;
   for(size_t i = 0; i <= 10; ++i) {
     add_to_buffer(i);
   }
@@ -179,7 +228,7 @@ int main(int argc, char* argv[]) {
   add_to_buffer(11);
   std::cout<< buffer.size() <<endl;
   set_bound_buffer(5);
-  std::cout<< remove_from_buffer() <<endl;
+  std::cout<< remove_from_buffer().unwrap() <<endl;
   set_bound_buffer(-1);
   
 	return 0;

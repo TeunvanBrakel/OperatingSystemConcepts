@@ -1,7 +1,7 @@
 [
 {
   "directory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-  "command": "/usr/bin/g++    -Wall -O2 -g -g -std=gnu++14 -o CMakeFiles/prime.dir/main.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/project2/main.cpp",
+  "command": "/usr/bin/g++    -Wall -O2 -g -g -o CMakeFiles/prime.dir/main.cpp.o -c /home/teunvbrakel/assignments/OperatingSystemConcepts/project2/main.cpp",
   "file": "/home/teunvbrakel/assignments/OperatingSystemConcepts/project2/main.cpp"
 }
 ]
