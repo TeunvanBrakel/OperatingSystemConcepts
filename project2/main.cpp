@@ -190,21 +190,22 @@ Result<int32_t, string> remove_from_buffer() {
 }
 
 void set_bound_buffer(size_t bound) {
-  const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
-  const std::lock_guard<std::mutex> l2(read_from_buffer_mtx); 
+  {
+    const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
+    const std::lock_guard<std::mutex> l2(read_from_buffer_mtx);
+    if(bound == BufferState::Unbounded) {
+      write_to_log(ErrorMessages[NEGATIVE_BUFFER_BOUND]);
+      return;
+    }
 
-  if(bound == BufferState::Unbounded) {
-    write_to_log(ErrorMessages[NEGATIVE_BUFFER_BOUND]);
-    return;
+    if(bound < buffer.size()) {
+      write_to_log(ErrorMessages[REQUESTED_BOUND_TO_LOW]);
+      return;
+    }
+    
+    BUFFER_SIZE = bound;
+    buffer.reserve(bound);
   }
-
-  if(bound < buffer.size()) {
-    write_to_log(ErrorMessages[REQUESTED_BOUND_TO_LOW]);
-    return;
-  }
-  
-  BUFFER_SIZE = bound;
-  buffer.reserve(bound);
   write_to_log(SuccesMessages[SET_BOUND](bound));
 }
 
