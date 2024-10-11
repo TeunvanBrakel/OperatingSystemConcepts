@@ -28,6 +28,8 @@
 #include <variant>
 #include <chrono>
 #include <atomic>
+#include <cassert>
+#include <unordered_set>
 
 // although it is good habit, you don't have to type 'std::' before many objects by including this line
 using namespace std;
@@ -133,24 +135,24 @@ std::map<std::size_t, std::function<const std::string(int)>> SuccesMessages = {
 
 void write_to_log(const std::string& s) {
   const std::lock_guard<std::mutex> l(read_from_log_allowed_mtx);
-  while(n_readers > 0); //Could take infinite time
+  while(n_readers > 0); //Could take infinite time //Critical section because of n_readers
 
   const std::lock_guard<std::mutex> l2(write_to_log_allowed_mtx);
-  logs.push(s);
+  logs.push(s); //Critical section
 }
 
 Result<std::string, std::string> read_from_log() {
     read_from_log_allowed_mtx.lock();
-    ++n_readers;
+    ++n_readers; //Critical section
     read_from_log_allowed_mtx.unlock();
-    while(n_readers > 0) {
-      if(logs.empty()) {
+    while(n_readers > 0) { //Critical section because of n_readers
+      if(logs.empty()) { //Critical section
           write_to_log(ErrorMessages[NO_LOGS_AVAILABLE]);
-          --n_readers;
+          --n_readers; //Critical section
           return Err<std::string>("Log is empty");
       }
-      string result = logs.top();
-      --n_readers;
+      string result = logs.top(); //Critical section
+      --n_readers; //Critical section
       return Ok(result);
     }
 }
@@ -158,34 +160,34 @@ Result<std::string, std::string> read_from_log() {
 void add_to_buffer(int32_t element) {
   const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
   const std::lock_guard<std::mutex> lock2(read_from_buffer_mtx);
-  if(BUFFER_SIZE != BufferState::Unbounded && BUFFER_SIZE <= buffer.size()) {
+  if(BUFFER_SIZE != BufferState::Unbounded && BUFFER_SIZE <= buffer.size()) { //Critical section
     write_to_log(ErrorMessages[FULL_BUFFER]);
     return; 
   }
 
-  while(n_read_from_buffer > 0);
+  while(n_read_from_buffer > 0); //Critical section because of n_read_from_buffer
 
-  ++n_write_to_buffer;
+  ++n_write_to_buffer; //Critical section
   const std::lock_guard<std::mutex> lock(write_to_buffer_mtx);
   write_to_log(SuccesMessages[ADDED_TO_BUFFER](element));
-  buffer.emplace_back(element);
-  --n_write_to_buffer; 
+  buffer.emplace_back(element); //Critical section
+  --n_write_to_buffer; //Critical section
 }
 
 Result<int32_t, string> remove_from_buffer() {
   const std::lock_guard<std::mutex> l(read_from_buffer_mtx); 
-  ++n_read_from_buffer;
-
-  if(buffer.empty()) {
+  ++n_read_from_buffer; //Critical section
+ 
+  if(buffer.empty()) { //Critical section
     write_to_log(ErrorMessages[EMPTY_BUFFER]);
-    --n_read_from_buffer;
+    --n_read_from_buffer; //Critical section
     return Err<std::string>(ErrorMessages[EMPTY_BUFFER]);
   }
 
-  int32_t r = buffer.front();
-  buffer.erase(buffer.begin());
+  int32_t r = buffer.front(); //Critical section
+  buffer.erase(buffer.begin()); //Critical section
   write_to_log(SuccesMessages[REMOVED_FROM_BUFFER](r));
-  --n_read_from_buffer;
+  --n_read_from_buffer; //Critical section
   return Ok<int32_t>(r); 
 }
 
@@ -193,44 +195,62 @@ void set_bound_buffer(size_t bound) {
   {
     const std::lock_guard<std::mutex> l(bound_semaphore_mtx); 
     const std::lock_guard<std::mutex> l2(read_from_buffer_mtx);
-    if(bound == BufferState::Unbounded) {
+    if(bound == BufferState::Unbounded) { //Critical section
       write_to_log(ErrorMessages[NEGATIVE_BUFFER_BOUND]);
       return;
     }
 
-    if(bound < buffer.size()) {
+    if(bound < buffer.size()) { //Critical section
       write_to_log(ErrorMessages[REQUESTED_BOUND_TO_LOW]);
       return;
     }
     
-    BUFFER_SIZE = bound;
-    buffer.reserve(bound);
+    BUFFER_SIZE = bound; //Critical section
+    buffer.reserve(bound); //Critical section
   }
   write_to_log(SuccesMessages[SET_BOUND](bound));
 }
 
 void unbound_buffer() {
-  BUFFER_SIZE = -1;
+  BUFFER_SIZE = -1; //Critical section
   write_to_log(SuccesMessages[UNBOUND](-1));
 }
 
 
+/* TESTING FUNCTIONS */
+void test_buffer_integrity(std::size_t expected_size) {
+    assert(buffer.size() == expected_size);
+
+    std::unordered_set<int> unique_values(buffer.begin(), buffer.end());
+    assert(unique_values.size() == expected_size);
+
+    for (std::size_t i = 0; i < expected_size; ++i) {
+        assert(unique_values.find(i) != unique_values.end()); 
+    }
+
+    for(std::size_t i = 0; i < expected_size; ++i) {
+      std::cout << buffer[i] << "\n";
+    }
+    std::cout << endl;
+    
+    std::cout << "Buffer integrity test passed!" << std::endl;
+}
+
+std::size_t run_threads_for_testing(std::size_t n_threads) {
+    std::vector<std::thread> threads;
+    for (std::size_t i = 0; i < n_threads; ++i) {
+        threads.push_back(std::thread(add_to_buffer, i));
+    }
+
+    for (auto& th : threads) {
+        th.join();
+    }
+    return n_threads;
+}
+
+
 int main(int argc, char* argv[]) {
-  remove_from_buffer();
-  std::cout<< read_from_log().unwrap() << endl;
-  string s = "test";
-  write_to_log(s);
-  set_bound_buffer(9);
-  std::cout << read_from_log().unwrap() <<endl;
-  for(size_t i = 0; i <= 10; ++i) {
-    add_to_buffer(i);
-  }
-  unbound_buffer();
-  add_to_buffer(11);
-  std::cout<< buffer.size() <<endl;
-  set_bound_buffer(5);
-  std::cout<< remove_from_buffer().unwrap() <<endl;
-  set_bound_buffer(-1);
-  
+  auto n = run_threads_for_testing(100);
+  test_buffer_integrity(n);
 	return 0;
 }
