@@ -155,10 +155,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "CXX compiler"
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "STRING",
 			"value" : "/usr/bin/g++"
 		},
 		{
@@ -283,10 +283,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "STRING",
 			"value" : "/usr/bin/gcc"
 		},
 		{
@@ -615,7 +615,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/project2"
+			"value" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -859,7 +859,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "prime"
+			"value" : "memory"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1154,7 +1154,7 @@
 			"value" : "[TRUE][v()]"
 		},
 		{
-			"name" : "prime_BINARY_DIR",
+			"name" : "memory_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1166,7 +1166,7 @@
 			"value" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/build"
 		},
 		{
-			"name" : "prime_IS_TOP_LEVEL",
+			"name" : "memory_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1178,7 +1178,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "prime_SOURCE_DIR",
+			"name" : "memory_SOURCE_DIR",
 			"properties" : 
 			[
 				{
@@ -1187,7 +1187,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/project2"
+			"value" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3"
 		}
 	],
 	"kind" : "cache",

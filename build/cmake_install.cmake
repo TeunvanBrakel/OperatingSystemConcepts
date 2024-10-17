@@ -1,4 +1,4 @@
-# Install script for directory: /home/teunvbrakel/assignments/OperatingSystemConcepts/project2
+# Install script for directory: /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "prime"
+			"path" : "memory"
 		}
 	],
 	"backtrace" : 1,
@@ -24,7 +24,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 10,
+				"line" : 11,
 				"parent" : 0
 			}
 		]
@@ -36,6 +36,9 @@
 			[
 				{
 					"fragment" : " -Wall -O2 -g -g"
+				},
+				{
+					"fragment" : "-std=gnu++14"
 				}
 			],
 			"language" : "CXX",
@@ -45,7 +48,7 @@
 				[
 					1
 				],
-				"standard" : "17"
+				"standard" : "14"
 			},
 			"sourceIndexes" : 
 			[
@@ -53,7 +56,7 @@
 			]
 		}
 	],
-	"id" : "prime::@6890427a1f51a3e7e1df",
+	"id" : "memory::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -69,8 +72,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "prime",
-	"nameOnDisk" : "prime",
+	"name" : "memory",
+	"nameOnDisk" : "memory",
 	"paths" : 
 	{
 		"build" : ".",

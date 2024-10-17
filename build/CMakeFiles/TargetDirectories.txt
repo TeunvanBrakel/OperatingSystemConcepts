@@ -1,3 +1,3 @@
-/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/prime.dir
+/home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/memory.dir
 /home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/edit_cache.dir
 /home/teunvbrakel/assignments/OperatingSystemConcepts/build/CMakeFiles/rebuild_cache.dir

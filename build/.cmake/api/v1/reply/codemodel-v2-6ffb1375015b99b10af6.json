@@ -27,7 +27,7 @@
 					[
 						0
 					],
-					"name" : "prime",
+					"name" : "memory",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "prime::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-prime-Debug-755967b703bfdab1520a.json",
-					"name" : "prime",
+					"id" : "memory::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-memory-Debug-b924b7af8967eaf77d09.json",
+					"name" : "memory",
 					"projectIndex" : 0
 				}
 			]
@@ -50,7 +50,7 @@
 	"paths" : 
 	{
 		"build" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/build",
-		"source" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/project2"
+		"source" : "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3"
 	},
 	"version" : 
 	{

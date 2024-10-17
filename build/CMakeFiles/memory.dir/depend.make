@@ -1,2 +1,2 @@
-# Empty dependencies file for prime.
+# Empty dependencies file for memory.
 # This may be replaced when dependencies are built.
