@@ -51,7 +51,19 @@
 		"streambuf": "cpp",
 		"thread": "cpp",
 		"typeinfo": "cpp",
-		"iomanip": "cpp"
+		"iomanip": "cpp",
+		"any": "cpp",
+		"compare": "cpp",
+		"concepts": "cpp",
+		"list": "cpp",
+		"map": "cpp",
+		"set": "cpp",
+		"unordered_set": "cpp",
+		"future": "cpp",
+		"numbers": "cpp",
+		"semaphore": "cpp",
+		"stop_token": "cpp",
+		"variant": "cpp"
 	},
 	"cmake.sourceDirectory": "/home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3"
 }

@@ -227,8 +227,22 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
-  /usr/include/c++/11/bits/vector.tcc
+  /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/x86_64-linux-gnu/sys/mman.h \
+  /usr/include/x86_64-linux-gnu/bits/mman.h \
+  /usr/include/x86_64-linux-gnu/bits/mman-map-flags-generic.h \
+  /usr/include/x86_64-linux-gnu/bits/mman-linux.h \
+  /usr/include/x86_64-linux-gnu/bits/mman-shared.h \
+  /usr/include/c++/11/cstring \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+  /usr/include/x86_64-linux-gnu/bits/string_fortified.h
 
+
+/usr/include/c++/11/cstring:
+
+/usr/include/x86_64-linux-gnu/sys/mman.h:
 
 /usr/include/c++/11/bits/vector.tcc:
 
@@ -412,6 +426,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 
 /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
 
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
+
 /usr/include/c++/11/tuple:
 
 /usr/include/c++/11/type_traits:
@@ -423,6 +439,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 /home/teunvbrakel/assignments/OperatingSystemConcepts/assignment3/main.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/mman.h:
 
 /usr/include/locale.h:
 
@@ -494,6 +512,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 
 /usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
+/usr/include/x86_64-linux-gnu/bits/mman-linux.h:
+
 /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
@@ -505,6 +525,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 /usr/include/c++/11/cerrno:
 
 /usr/include/x86_64-linux-gnu/sys/resource.h:
+
+/usr/include/x86_64-linux-gnu/bits/mman-map-flags-generic.h:
 
 /usr/include/c++/11/streambuf:
 
@@ -539,6 +561,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 
 /usr/include/c++/11/bits/std_abs.h:
+
+/usr/include/string.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio.h:
 
@@ -608,11 +632,15 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 
 /usr/include/endian.h:
 
+/usr/include/x86_64-linux-gnu/bits/mman-shared.h:
+
 /usr/include/c++/11/ext/new_allocator.h:
 
 /usr/include/c++/11/iomanip:
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
+
+/usr/include/strings.h:
 
 /usr/include/c++/11/bits/sstream.tcc:
 
@@ -651,6 +679,8 @@ CMakeFiles/memory.dir/main.cpp.o: /home/teunvbrakel/assignments/OperatingSystemC
 /usr/include/wchar.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
+
+/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
