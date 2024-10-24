@@ -53,36 +53,38 @@ int main(int argc, char* argv[]) {
   constexpr int block_size = 16 * 1024; 
   constexpr int b_row_size = 8;
 
- for (int64_t r = 0; r < REPEAT; ++r) {
-        for (int64_t i = 1; i < SIZE - 1; i += block_size) {
-            for (int64_t j = 1; j < SIZE - 1; j += block_size) {
-                for (int64_t b_row = i; b_row < std::min(i + block_size, SIZE - 1); ++b_row) {
-                    for (int64_t b_col = j; b_col < std::min(j + block_size, SIZE - 1); ++b_col) {
-                        res[b_row * SIZE + b_col] = 0;
+ if (REPEAT > 0) {
+    for (int64_t i = 1; i < SIZE - 1; i += block_size) {
+        for (int64_t j = 1; j < SIZE - 1; j += block_size) {
+            for (int64_t b_row = i; b_row < std::min(i + block_size, SIZE - 1); ++b_row) {
+                for (int64_t b_col = j; b_col < std::min(j + block_size, SIZE - 1); ++b_col) {
+                    res[b_row * SIZE + b_col] = 0;
 
-                        for (long k = -1; k <= 1; k++) {
-                            for (long l = -1; l <= 1; l++) {
-                                int64_t img_row = b_row + k;
-                                int64_t img_col = b_col + l;
+                    for (long k = -1; k <= 1; k++) {
+                        for (long l = -1; l <= 1; l++) {
+                            int64_t img_row = b_row + k;
+                            int64_t img_col = b_col + l;
 
-                                if (img_row >= 0 && img_row < SIZE && img_col >= 0 && img_col < SIZE) {
-                                    res[b_row * SIZE + b_col] += img[img_row * SIZE + img_col];
-                                }
+                            if (img_row >= 0 && img_row < SIZE && img_col >= 0 && img_col < SIZE) {
+                                res[b_row * SIZE + b_col] += img[img_row * SIZE + img_col];
                             }
                         }
-                        res[b_row * SIZE + b_col] /= 9;
                     }
-                
-              }
-                
+                    res[b_row * SIZE + b_col] /= 9;
+                }
             }
         }
-    for (int64_t i = 1; i < SIZE - 1; i++) {
-      for (int64_t j = 1; j < SIZE - 1; j++) {
-        dummy += res[j * SIZE + i];
-      }
     }
-  }
+
+    for (int64_t r = 0; r < REPEAT; ++r) {
+        for (int64_t i = 1; i < SIZE - 1; i++) {
+            for (int64_t j = 1; j < SIZE - 1; j++) {
+                dummy += res[j * SIZE + i];
+            }
+        }
+    }
+}
+
 
   if (munmap(res, TOTALSIZE) == -1) {
     perror("munmap failed");
