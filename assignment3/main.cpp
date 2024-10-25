@@ -51,7 +51,6 @@ int main(int argc, char* argv[]) {
   // A pixel in the output image is calculated by averaging 9 pixels: the pixel at the same
   // coordinates in the input image, and the adjecent pixels.
   constexpr int block_size = 16 * 1024; 
-  constexpr int b_row_size = 8;
 
  if (REPEAT > 0) {
     for (int64_t i = 1; i < SIZE - 1; i += block_size) {
